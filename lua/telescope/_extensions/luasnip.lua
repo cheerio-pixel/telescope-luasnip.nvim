@@ -69,6 +69,7 @@ local _opts = {
   preview = {
     check_mime_type = true,
   },
+  insert_after_cursor = false
 }
 M.opts = _opts
 
@@ -162,7 +163,11 @@ M.luasnip_fn = function(opts)
 
                 -- Use first snippet to expand
                 if (#snippetsToExpand > 0) then
-                    vim.cmd(':startinsert!')
+                    if M.opts.insert_after_cursor then
+                      vim.api.nvim_feedkeys('a', 'n', false)
+                    else
+                      vim.cmd(':startinsert!')
+                    end
                     vim.defer_fn(function() luasnip.snip_expand(snippetsToExpand[1]) end, 50)
                 else
                     error(
